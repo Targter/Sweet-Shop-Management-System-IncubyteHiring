@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getSweets } from "../api/sweets";
+import { getSweets, purchaseSweet } from "../api/sweets";
 import type { Sweet } from "../types";
 
 const DashboardPage = () => {
@@ -21,6 +21,16 @@ const DashboardPage = () => {
     }
   };
 
+  const handleBuy = async (id: string) => {
+    try {
+      await purchaseSweet(id, 1);
+      // Refresh data to show new stock level
+      fetchData();
+    } catch (error) {
+      alert("Purchase failed!");
+    }
+  };
+
   if (loading) return <div className="p-8 text-center">Loading...</div>;
 
   return (
@@ -38,9 +48,8 @@ const DashboardPage = () => {
               {sweet.category}
             </span>
 
-            <div className="mt-4 flex justify-between items-center">
+            <div className="mt-4 flex justify-between items-center mb-4">
               <span className="text-lg font-semibold">${sweet.price}</span>
-
               {sweet.quantity > 0 ? (
                 <span className="text-green-600 font-medium">
                   {sweet.quantity} in stock
@@ -49,6 +58,20 @@ const DashboardPage = () => {
                 <span className="text-red-500 font-bold">Out of Stock</span>
               )}
             </div>
+
+            {/* New Button Section */}
+            <button
+              onClick={() => handleBuy(sweet._id)}
+              disabled={sweet.quantity === 0}
+              className={`w-full py-2 px-4 rounded font-bold text-white transition
+                ${
+                  sweet.quantity > 0
+                    ? "bg-green-500 hover:bg-green-600"
+                    : "bg-gray-300 cursor-not-allowed"
+                }`}
+            >
+              {sweet.quantity > 0 ? "Buy 1" : "Sold Out"}
+            </button>
           </div>
         ))}
       </div>
