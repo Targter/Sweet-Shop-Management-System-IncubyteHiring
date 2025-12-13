@@ -1,3 +1,4 @@
+// BACKEND/tests/inventory.test.ts
 import request from "supertest";
 import { app } from "../src/app";
 import mongoose from "mongoose";
