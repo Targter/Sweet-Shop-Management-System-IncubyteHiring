@@ -10,6 +10,7 @@ vi.mock("../api/sweets", () => ({
 }));
 
 // ---- MOCK AUTH CONTEXT ----
+// We mock a logged-in user so the cart logic works immediately without redirect
 vi.mock("../context/AuthContext", () => ({
   useAuth: () => ({
     user: { role: "user" },
@@ -55,14 +56,16 @@ describe("DashboardPage", () => {
     );
 
     await waitFor(() => {
+      // Check for Item Names
       expect(screen.getByText("Chocolate Bar")).toBeInTheDocument();
-      expect(screen.getByText("$5")).toBeInTheDocument();
       expect(screen.getByText("Gummy Bears")).toBeInTheDocument();
-      expect(screen.getByText("Out of Stock")).toBeInTheDocument();
+
+      // Check for Price (The UI renders "${sweet.price}")
+      expect(screen.getByText("$5")).toBeInTheDocument();
     });
   });
 
-  it("adds item to cart when Add to Cart button is clicked", async () => {
+  it("adds item to cart when Add button (+) is clicked", async () => {
     (getSweets as any).mockResolvedValue({ data: mockSweets });
 
     render(
@@ -73,8 +76,13 @@ describe("DashboardPage", () => {
 
     await waitFor(() => screen.getByText("Chocolate Bar"));
 
-    const addBtn = screen.getByRole("button", { name: /add to cart/i });
-    fireEvent.click(addBtn);
+    // The Retro UI uses "+" as the button label
+    // We have multiple items, so we grab all "+" buttons.
+    // Index 0 corresponds to "Chocolate Bar" (the first item).
+    const addButtons = screen.getAllByRole("button", { name: "+" });
+    const chocoBtn = addButtons[0];
+
+    fireEvent.click(chocoBtn);
 
     expect(addToCartMock).toHaveBeenCalledWith(mockSweets[0]);
   });
@@ -90,7 +98,10 @@ describe("DashboardPage", () => {
 
     await waitFor(() => screen.getByText("Gummy Bears"));
 
-    const soldOutBtn = screen.getByRole("button", { name: /sold out/i });
-    expect(soldOutBtn).toBeDisabled();
+    // Index 1 corresponds to "Gummy Bears" (the second item)
+    const addButtons = screen.getAllByRole("button", { name: "+" });
+    const gummyBtn = addButtons[1];
+
+    expect(gummyBtn).toBeDisabled();
   });
 });
