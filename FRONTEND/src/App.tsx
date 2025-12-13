@@ -2,7 +2,9 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import LoginPage from "./page/LoginPagee";
 import DashboardPage from "./page/DashboardPage";
+import AddSweetPage from "./page/AddSweetPage";
 // const Login = () => <h2>Login Page</h2>;
+
 const Register = () => <h2>Register Page</h2>;
 // const Dashboard = () => <h2>Dashboard (Private)</h2>;
 const Admin = () => <h2>Admin Panel</h2>;
@@ -26,7 +28,7 @@ function App() {
         {/* Public */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />
-
+        <Route path="/add-sweet" element={<AddSweetPage />} />
         {/* Private */}
         <Route
           path="/dashboard"

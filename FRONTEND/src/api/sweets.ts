@@ -7,3 +7,7 @@ export const getSweets = () => {
 export const purchaseSweet = (id: string, quantity: number) => {
   return api.post(`/sweets/${id}/purchase`, { quantity });
 };
+
+export const createSweet = (data: Omit<Sweet, '_id'>) => {
+  return api.post('/sweets', data);
+};
