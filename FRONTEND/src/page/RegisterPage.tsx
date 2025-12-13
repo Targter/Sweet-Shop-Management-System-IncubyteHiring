@@ -1,5 +1,5 @@
 // FRONTEND/src/page/RegisterPage.tsx
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { registerUser } from "../api/auth";
 import { useNavigate, Link } from "react-router-dom";
