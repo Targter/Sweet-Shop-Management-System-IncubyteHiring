@@ -3,11 +3,15 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import LoginPage from "./page/LoginPagee";
 import DashboardPage from "./page/DashboardPage";
 import AddSweetPage from "./page/AddSweetPage";
+import RegisterPage from "./page/RegisterPage";
+import AdminDashboard from "./page/AdminDashboard";
+import EditSweetPage from "./page/EditSweetPage";
+
 // const Login = () => <h2>Login Page</h2>;
 
-const Register = () => <h2>Register Page</h2>;
+// const Register = () => <h2>Register Page</h2>;
 // const Dashboard = () => <h2>Dashboard (Private)</h2>;
-const Admin = () => <h2>Admin Panel</h2>;
+// const Admin = () => <h2>Admin Panel</h2>;
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -27,7 +31,7 @@ function App() {
 
         {/* Public */}
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/add-sweet" element={<AddSweetPage />} />
         {/* Private */}
         <Route
@@ -38,6 +42,7 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route path="/edit-sweet/:id" element={<EditSweetPage />} />
 
         {/* Admin */}
         <Route
@@ -45,7 +50,7 @@ function App() {
           element={
             <PrivateRoute>
               <AdminRoute>
-                <Admin />
+                <AdminDashboard />
               </AdminRoute>
             </PrivateRoute>
           }
