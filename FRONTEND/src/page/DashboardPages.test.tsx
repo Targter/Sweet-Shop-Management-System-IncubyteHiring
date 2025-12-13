@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+// 
 import DashboardPage from "./DashboardPage";
 import * as sweetApi from "../api/sweets"; // We will create this next
 
