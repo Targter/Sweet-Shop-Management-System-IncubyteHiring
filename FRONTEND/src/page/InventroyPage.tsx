@@ -3,6 +3,89 @@ import { Link, useNavigate } from "react-router-dom";
 import { getSweets, deleteSweet } from "../api/sweets";
 import type { Sweet } from "../types";
 
+// --- Retro Icons ---
+const Icons = {
+  Back: () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m15 18-6-6 6-6" />
+    </svg>
+  ),
+  Plus: () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="12" y1="5" x2="12" y2="19" />
+      <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  ),
+  Search: () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  ),
+  Edit: () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+    </svg>
+  ),
+  Trash: () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 6h18" />
+      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+    </svg>
+  ),
+};
+
 const InventoryPage = () => {
   const [sweets, setSweets] = useState<Sweet[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,17 +101,12 @@ const InventoryPage = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (
-      confirm(
-        "Are you sure you want to delete this product? This cannot be undone."
-      )
-    ) {
+    if (confirm("Are you sure you want to remove this item from the pantry?")) {
       await deleteSweet(id);
-      fetchData(); // Refresh list
+      fetchData();
     }
   };
 
-  // Filter logic
   const filteredSweets = sweets.filter(
     (sweet) =>
       sweet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -36,129 +114,159 @@ const InventoryPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-center mb-8">
+    <div className="min-h-screen bg-[#FEFBEA] text-[#2C241B] font-sans p-6 md:p-10">
+      {/* --- Header Section --- */}
+      <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            Inventory Management
+          <h1 className="text-4xl font-serif font-black italic tracking-tight text-[#2C241B]">
+            Pantry Inventory
           </h1>
-          <p className="text-gray-500 mt-1">
-            Manage your products, stock levels, and prices.
+          <p className="text-sm font-bold text-gray-500 mt-2 uppercase tracking-widest">
+            Manage Stock & Pricing
           </p>
         </div>
-        <div className="flex gap-4 mt-4 md:mt-0">
+
+        <div className="flex gap-4">
           <Link
             to="/admin"
-            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 bg-white"
+            className="flex items-center gap-2 px-5 py-2.5 bg-white border-2 border-[#2C241B] rounded-xl font-bold hover:bg-[#FEFBEA] hover:shadow-[4px_4px_0px_0px_#2C241B] transition-all"
           >
-            Back to Analytics
+            <Icons.Back /> Analytics
           </Link>
           <Link
             to="/admin/add"
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-sm"
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#E76F51] text-white border-2 border-[#2C241B] rounded-xl font-bold shadow-[4px_4px_0px_0px_#2C241B] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
           >
-            + Add New Product
+            <Icons.Plus /> Add Item
           </Link>
         </div>
       </div>
 
-      {/* Search & Toolbar */}
-      <div className="bg-white p-4 rounded-t-lg border-b border-gray-200 flex items-center gap-4">
-        <div className="relative flex-1 max-w-md">
-          <input
-            type="text"
-            placeholder="Search by name or category..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <span className="absolute left-3 top-2.5 text-gray-400">🔍</span>
-        </div>
+      {/* --- Search Bar --- */}
+      <div className="mb-8 relative max-w-lg">
+        <input
+          type="text"
+          placeholder="Search the pantry..."
+          className="w-full pl-12 pr-4 py-3 bg-white border-2 border-[#2C241B] rounded-full font-bold placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-[#2A9D8F]/20 focus:border-[#2A9D8F] transition-all shadow-sm"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#2C241B]">
+          <Icons.Search />
+        </span>
       </div>
 
-      {/* Professional Table */}
-      <div className="bg-white rounded-b-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Product Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Category
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Price
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Stock Status
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {filteredSweets.map((sweet) => (
-              <tr key={sweet._id} className="hover:bg-gray-50 transition">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
-                    {sweet.name}
-                  </div>
-                  <div className="text-xs text-gray-400">ID: {sweet._id}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs">
-                    {sweet.category}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  ${sweet.price.toFixed(2)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {sweet.quantity === 0 ? (
-                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                      Out of Stock
-                    </span>
-                  ) : sweet.quantity < 10 ? (
-                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                      Low Stock ({sweet.quantity})
-                    </span>
-                  ) : (
-                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                      In Stock ({sweet.quantity})
-                    </span>
-                  )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <button
-                    onClick={() => navigate(`/admin/edit/${sweet._id}`)}
-                    className="text-indigo-600 hover:text-indigo-900 mr-4"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(sweet._id)}
-                    className="text-red-600 hover:text-red-900"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {filteredSweets.length === 0 && (
+      {/* --- Ledger Table --- */}
+      <div className="bg-white rounded-2xl border-2 border-[#2C241B] shadow-[8px_8px_0px_0px_#2C241B] overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-left">
+            <thead className="bg-[#2C241B] text-[#FEFBEA]">
               <tr>
-                <td
-                  colSpan={5}
-                  className="px-6 py-10 text-center text-gray-500"
-                >
-                  No products found matching your search.
-                </td>
+                <th className="px-6 py-4 font-serif italic text-lg tracking-wide font-normal">
+                  Product Name
+                </th>
+                <th className="px-6 py-4 font-serif italic text-lg tracking-wide font-normal">
+                  Category
+                </th>
+                <th className="px-6 py-4 font-serif italic text-lg tracking-wide font-normal">
+                  Price
+                </th>
+                <th className="px-6 py-4 font-serif italic text-lg tracking-wide font-normal">
+                  Status
+                </th>
+                <th className="px-6 py-4 font-serif italic text-lg tracking-wide font-normal text-right">
+                  Actions
+                </th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y-2 divide-dashed divide-[#2C241B]/10">
+              {filteredSweets.map((sweet) => (
+                <tr
+                  key={sweet._id}
+                  className="hover:bg-[#FFF8F1] transition-colors group"
+                >
+                  {/* Name */}
+                  <td className="px-6 py-4">
+                    <div className="text-base font-black text-[#2C241B]">
+                      {sweet.name}
+                    </div>
+                    <div className="text-[10px] font-mono text-gray-400">
+                      ID: {sweet._id.slice(-6)}
+                    </div>
+                  </td>
+
+                  {/* Category */}
+                  <td className="px-6 py-4">
+                    <span className="inline-block border border-[#2C241B] bg-[#FEFBEA] text-[#2C241B] px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider shadow-[2px_2px_0px_0px_#ccc]">
+                      {sweet.category}
+                    </span>
+                  </td>
+
+                  {/* Price */}
+                  <td className="px-6 py-4">
+                    <span className="font-mono font-bold text-lg text-[#E76F51]">
+                      ${sweet.price.toFixed(2)}
+                    </span>
+                  </td>
+
+                  {/* Stock Status */}
+                  <td className="px-6 py-4">
+                    {sweet.quantity === 0 ? (
+                      <span className="flex items-center gap-1 text-red-500 font-black text-xs uppercase tracking-wide">
+                        <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>{" "}
+                        Out of Stock
+                      </span>
+                    ) : sweet.quantity < 10 ? (
+                      <span className="text-[#E9C46A] font-black text-xs uppercase tracking-wide">
+                        Low Stock ({sweet.quantity})
+                      </span>
+                    ) : (
+                      <span className="text-[#2A9D8F] font-black text-xs uppercase tracking-wide">
+                        In Stock ({sweet.quantity})
+                      </span>
+                    )}
+                  </td>
+
+                  {/* Actions */}
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => navigate(`/admin/edit/${sweet._id}`)}
+                        className="p-2 bg-[#E9C46A] text-[#2C241B] rounded border-2 border-[#2C241B] hover:shadow-[2px_2px_0px_0px_#2C241B] transition-all"
+                        title="Edit"
+                      >
+                        <Icons.Edit />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(sweet._id)}
+                        className="p-2 bg-[#FFCDD2] text-red-800 rounded border-2 border-[#2C241B] hover:bg-red-400 hover:text-white hover:shadow-[2px_2px_0px_0px_#2C241B] transition-all"
+                        title="Delete"
+                      >
+                        <Icons.Trash />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+
+              {filteredSweets.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center">
+                    <div className="flex flex-col items-center opacity-50">
+                      <span className="text-4xl mb-2">🥨</span>
+                      <p className="font-bold text-lg text-[#2C241B]">
+                        The pantry is empty.
+                      </p>
+                      <p className="text-sm">
+                        No items found matching your search.
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
