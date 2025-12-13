@@ -72,6 +72,22 @@ const Icons = {
       <polyline points="22,6 12,13 2,6" />
     </svg>
   ),
+  User: () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  ),
 };
 
 const DashboardPage = () => {
@@ -91,11 +107,9 @@ const DashboardPage = () => {
 
   useEffect(() => {
     let result = sweets;
-    // Category Filter
     if (category !== "All") {
       result = result.filter((s) => s.category === category);
     }
-    // Search Filter
     if (searchTerm) {
       result = result.filter((s) =>
         s.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -118,11 +132,21 @@ const DashboardPage = () => {
     }
   };
 
+  // --- Wrapper to enforce login before Adding to Cart ---
+  const handleAddToCart = (sweet: Sweet) => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    addToCart(sweet);
+  };
+
   return (
     <div className="min-h-screen bg-[#FEFBEA] text-[#2C241B] font-sans flex flex-col">
-      {/* --- Navbar (Cleaned up: No Search) --- */}
+      {/* --- Navbar --- */}
       <nav className="sticky top-0 z-50 bg-[#FEFBEA] border-b-2 border-[#2C241B]">
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-row justify-between items-center gap-4">
+          {/* Brand */}
           <div
             onClick={() => navigate("/")}
             className="flex items-center gap-2 cursor-pointer select-none group"
@@ -135,35 +159,54 @@ const DashboardPage = () => {
             </h1>
           </div>
 
+          {/* Right Side Actions */}
           <div className="flex items-center gap-4">
+            {/* Cart Button */}
             <button
               onClick={() => navigate("/cart")}
               className="relative bg-[#2A9D8F] text-white px-4 py-1.5 rounded-lg border-2 border-[#2C241B] font-bold shadow-[3px_3px_0px_0px_#2C241B] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all flex items-center gap-2 text-sm"
             >
               <Icons.Cart />
               <span className="hidden sm:inline">Cart</span>
-              {cart.length > 0 && (
+              {user && cart.length > 0 && (
                 <span className="absolute -top-3 -right-3 bg-[#E76F51] text-white text-[10px] font-bold w-5 h-5 rounded-full border-2 border-[#2C241B] flex items-center justify-center z-10">
                   {cart.reduce((acc, item) => acc + item.cartQty, 0)}
                 </span>
               )}
             </button>
 
-            {user?.role === "admin" && (
+            {/* --- AUTHENTICATION LOGIC START --- */}
+            {user ? (
+              // IF LOGGED IN
+              <>
+                {/* Admin Button (Only if role is admin) */}
+                {user.role === "admin" && (
+                  <button
+                    onClick={() => navigate("/admin")}
+                    className="bg-[#E9C46A] text-[#2C241B] px-4 py-1.5 rounded-lg border-2 border-[#2C241B] font-bold shadow-[3px_3px_0px_0px_#2C241B] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all text-sm flex items-center gap-2"
+                  >
+                    <Icons.User /> Admin
+                  </button>
+                )}
+
+                {/* Logout Button (For both Admin & Customer) */}
+                <button
+                  onClick={logout}
+                  className="font-bold text-sm underline decoration-2 decoration-[#E76F51] hover:text-[#E76F51] ml-2"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              // IF NOT LOGGED IN (Guest)
               <button
-                onClick={() => navigate("/admin")}
-                className="bg-[#E9C46A] text-[#2C241B] px-4 py-1.5 rounded-lg border-2 border-[#2C241B] font-bold shadow-[3px_3px_0px_0px_#2C241B] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all text-sm"
+                onClick={() => navigate("/login")}
+                className="bg-[#E76F51] text-white px-5 py-1.5 rounded-lg border-2 border-[#2C241B] font-bold shadow-[3px_3px_0px_0px_#2C241B] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all text-sm hover:bg-[#D65F41]"
               >
-                Admin
+                Login
               </button>
             )}
-
-            <button
-              onClick={logout}
-              className="font-bold text-sm underline decoration-2 decoration-[#E76F51] hover:text-[#E76F51]"
-            >
-              Exit
-            </button>
+            {/* --- AUTHENTICATION LOGIC END --- */}
           </div>
         </div>
       </nav>
@@ -172,7 +215,6 @@ const DashboardPage = () => {
       <main className="max-w-7xl mx-auto px-6 py-8 flex-grow w-full">
         {/* --- Hero Section --- */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
-          {/* Banner */}
           <div className="lg:col-span-2 bg-[#E76F51] text-[#FEFBEA] rounded-2xl border-2 border-[#2C241B] p-10 shadow-[6px_6px_0px_0px_#2C241B] relative overflow-hidden flex flex-col justify-center">
             <span className="bg-[#E9C46A] text-[#2C241B] px-3 py-1 text-xs font-black uppercase tracking-widest border-2 border-[#2C241B] w-max mb-4 rotate-1">
               Fresh from the oven
@@ -191,13 +233,11 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          {/* Fresh New Stats */}
           <div className="lg:col-span-1 flex flex-col gap-4">
             <div className="flex-1 bg-white border-2 border-[#2C241B] rounded-xl p-4 shadow-[4px_4px_0px_0px_#2C241B] flex flex-col">
               <h3 className="font-bold text-lg flex items-center gap-2 mb-4">
                 <Icons.Trend /> Trending
               </h3>
-              {/* CSS Bar Chart */}
               <div className="flex items-end justify-between h-20 gap-2 mt-auto px-2 border-b-2 border-[#2C241B] border-dashed">
                 <div className="w-1/4 bg-[#E9C46A] h-[60%] border-x-2 border-t-2 border-[#2C241B] rounded-t-sm"></div>
                 <div className="w-1/4 bg-[#E76F51] h-[85%] border-x-2 border-t-2 border-[#2C241B] rounded-t-sm"></div>
@@ -218,9 +258,8 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        {/* --- NEW Search & Filter Toolbar --- */}
+        {/* --- Search & Filter Toolbar --- */}
         <div className="bg-[#E9C46A] border-2 border-[#2C241B] rounded-xl p-4 mb-8 shadow-[4px_4px_0px_0px_#2C241B] flex flex-col md:flex-row items-center gap-4">
-          {/* 1. The Search Bar (Prominent) */}
           <div className="relative w-full md:w-1/3">
             <input
               type="text"
@@ -234,10 +273,8 @@ const DashboardPage = () => {
             </span>
           </div>
 
-          {/* Divider (Visual only) */}
           <div className="hidden md:block w-0.5 h-10 bg-[#2C241B] opacity-20 mx-2"></div>
 
-          {/* 2. Category Pills */}
           <div className="w-full overflow-x-auto no-scrollbar">
             <div className="flex gap-2 items-center">
               <span className="font-serif font-bold italic mr-2 whitespace-nowrap">
@@ -277,7 +314,6 @@ const DashboardPage = () => {
                 key={sweet._id}
                 className="group relative bg-white border-2 border-[#2C241B] rounded-xl overflow-hidden hover:shadow-[8px_8px_0px_0px_#2C241B] hover:-translate-y-1 transition-all duration-200"
               >
-                {/* Stock Tag */}
                 <div className="absolute top-2 right-2 z-10">
                   {sweet.quantity < 5 && sweet.quantity > 0 && (
                     <span className="bg-[#E76F51] text-white text-[10px] font-bold px-2 py-1 border border-[#2C241B] shadow-[2px_2px_0px_0px_#2C241B]">
@@ -304,7 +340,7 @@ const DashboardPage = () => {
                   <div className="flex justify-between items-center mt-4 pt-3 border-t-2 border-dashed border-[#2C241B]/20">
                     <span className="text-lg font-black">${sweet.price}</span>
                     <button
-                      onClick={() => addToCart(sweet)}
+                      onClick={() => handleAddToCart(sweet)} // Uses wrapper function to check login
                       disabled={sweet.quantity === 0}
                       className={`w-8 h-8 flex items-center justify-center rounded border-2 border-[#2C241B] transition-all
                         ${
@@ -324,11 +360,9 @@ const DashboardPage = () => {
       </main>
 
       {/* --- Footer --- */}
-      {/* --- Footer --- */}
       <footer className="bg-[#2C241B] text-[#FEFBEA] mt-16 border-t-4 border-[#E76F51]">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {/* Brand Column */}
             <div className="space-y-4">
               <h2 className="text-3xl font-serif font-black italic">
                 Retro<span className="text-[#E76F51]">Sweets</span>
@@ -338,7 +372,6 @@ const DashboardPage = () => {
                 Handcrafted with love and plenty of sugar.
               </p>
               <div className="flex gap-3">
-                {/* Social Placeholders */}
                 {[1, 2, 3].map((i) => (
                   <div
                     key={i}
@@ -350,7 +383,6 @@ const DashboardPage = () => {
               </div>
             </div>
 
-            {/* Newsletter Column */}
             <div className="space-y-4">
               <h4 className="font-bold text-[#E9C46A] uppercase tracking-widest text-sm">
                 Join the Club
@@ -366,19 +398,6 @@ const DashboardPage = () => {
                     placeholder="you@email.com"
                     className="w-full bg-[#FEFBEA] text-[#2C241B] pl-10 pr-3 py-2 rounded border-2 border-transparent focus:border-[#E76F51] focus:outline-none placeholder:text-gray-500 font-bold text-sm"
                   />
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2C241B]">
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                      <polyline points="22,6 12,13 2,6" />
-                    </svg>
-                  </span>
                 </div>
                 <button className="bg-[#E76F51] text-white px-4 py-2 rounded font-bold border-2 border-[#E76F51] hover:bg-[#2C241B] hover:text-[#E76F51] transition-colors">
                   →
@@ -386,7 +405,6 @@ const DashboardPage = () => {
               </div>
             </div>
 
-            {/* Links Column */}
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <h4 className="font-bold text-[#2A9D8F] mb-3">Shop</h4>
@@ -399,9 +417,6 @@ const DashboardPage = () => {
                   </li>
                   <li className="hover:text-[#E9C46A] cursor-pointer hover:translate-x-1 transition-transform">
                     Candies
-                  </li>
-                  <li className="hover:text-[#E9C46A] cursor-pointer hover:translate-x-1 transition-transform">
-                    Gift Boxes
                   </li>
                 </ul>
               </div>
