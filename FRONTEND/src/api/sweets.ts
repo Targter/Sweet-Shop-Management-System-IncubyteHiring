@@ -22,6 +22,7 @@ export const restockSweet = (id: string, quantity: number) => {
 };
 
 export const purchaseSweet = (id: string, quantity: number) => {
+  console.log("Purchasing sweet:", id, "Quantity:", quantity);
   return api.post(`/sweets/${id}/purchase`, { quantity });
 };
 

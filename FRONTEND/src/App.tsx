@@ -52,9 +52,9 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <PrivateRoute>
-              <DashboardPage />
-            </PrivateRoute>
+            <DashboardPage />
+            // <PrivateRoute>
+            // </PrivateRoute>
           }
         />
         <Route
@@ -80,16 +80,16 @@ function App() {
         />
 
         {/* 2. Inventory List */}
-        <Route
-          path="/admin/inventory"
-          element={
-            <PrivateRoute>
-              <AdminRoute>
-                <InventoryPage />
-              </AdminRoute>
-            </PrivateRoute>
-          }
-        />
+        {/* <Route
+            path="/admin/inventory"
+            element={
+              <PrivateRoute>
+                <AdminRoute>
+                  <InventoryPage />
+                </AdminRoute>
+              </PrivateRoute>
+            }
+          /> */}
 
         {/* 3. Add Product */}
         <Route
