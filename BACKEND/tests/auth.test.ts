@@ -1,5 +1,6 @@
 import request from "supertest";
 import { app } from "../src/app";
+
 import mongoose from "mongoose";
 
 describe("Auth Endpoints", () => {
@@ -12,12 +13,36 @@ describe("Auth Endpoints", () => {
     await mongoose.connection.close();
   });
 
-  it("POST /api/auth/register should register a user", async () => {
-    const res = await request(app)
-      .post("/api/auth/register")
-      .send({ username: "testuser", password: "password123" });
-    
-    expect(res.statusCode).toEqual(201);
-    expect(res.body).toHaveProperty("message", "User created");
-  });
+ it("should register a user", async () => {
+  const res = await request(app)
+    .post("/api/auth/register")
+    .send({
+      username: "loginuser",
+      password: "pw12345"
+    });
+
+  expect(res.statusCode).toBe(201);
+  expect(res.body).toHaveProperty("message", "User created");
+});
+
+  it("should login an existing user", async () => {
+  // create user first
+  await request(app)
+    .post("/api/auth/register")
+    .send({
+      username: "loginuser",
+      password: "pw12345"
+    });
+
+  const res = await request(app)
+    .post("/api/auth/login")
+    .send({
+      username: "loginuser",
+      password: "pw12345"
+    });
+
+  expect(res.statusCode).toBe(200);
+  expect(res.body).toHaveProperty("token");
+});
+
 });
