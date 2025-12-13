@@ -34,8 +34,7 @@ describe("AddSweetPage", () => {
     });
 
     // Click submit
-    fireEvent.click(screen.getByRole("button", { name: /add/i }));
-
+    fireEvent.click(screen.getByRole("button", { name: /create/i }));
     await waitFor(() => {
       expect(sweetApi.createSweet).toHaveBeenCalledWith({
         name: "New Candy",
