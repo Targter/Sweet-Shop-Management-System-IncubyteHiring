@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { BrowserRouter } from "react-router-dom";
 import AdminDashboard from "./AdminDashboard";
 import * as sweetApi from "../api/sweets";
@@ -9,6 +9,7 @@ vi.mock("../api/sweets", () => ({
   getSweets: vi.fn(),
   deleteSweet: vi.fn(),
   restockSweet: vi.fn(),
+  getAdminStats: vi.fn(),
 }));
 
 describe("AdminDashboard", () => {
@@ -35,6 +36,37 @@ describe("AdminDashboard", () => {
     const deleteBtn = screen.getByText(/delete/i);
     fireEvent.click(deleteBtn);
 
+    it("renders analytics stats correctly", async () => {
+      // Mock Response
+      (sweetApi.getAdminStats as any).mockResolvedValue({
+        data: {
+          totalRevenue: 5000,
+          totalOrders: 20,
+          totalProducts: 10,
+          totalCustomers: 5,
+          avgOrderValue: 250,
+          todayOrders: 2,
+          lowStockItems: [],
+          recentOrders: [],
+        },
+      });
+
+      render(
+        <BrowserRouter>
+          <AdminDashboard />
+        </BrowserRouter>
+      );
+
+      // Check for Loading
+      expect(screen.getByText(/loading/i)).toBeInTheDocument();
+
+      // Check for Data
+      await waitFor(() => {
+        expect(screen.getByText("$5000.00")).toBeInTheDocument(); // Revenue
+        expect(screen.getByText("20")).toBeInTheDocument(); // Orders
+        expect(screen.getByText("10")).toBeInTheDocument(); // Products
+      });
+    });
     // Confirm browser dialog (window.confirm)
     // Vitest needs a spy on window.confirm if used, or we can assume custom UI.
     // For simplicity, we assume the component calls API directly in this test or mocks confirm.
