@@ -1,11 +1,23 @@
 import { Request, Response } from 'express';
-import Sweet from '../BACKEND/src/models/Sweet';
+// import Sweet from '../BACKEND/src/models/Sweet';
+import Sweet from '../models/Sweet';
 
 // List all (Public)
 export const getAllSweets = async (req: Request, res: Response) => {
   try {
     const sweets = await Sweet.find();
     res.json(sweets);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// get by id : 
+export const getSweetById = async (req: Request, res: Response) => {
+  try {
+    const sweet = await Sweet.findById(req.params.id);
+    if (!sweet) return res.status(404).json({ error: 'Sweet not found' });
+    res.json(sweet);
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
   }

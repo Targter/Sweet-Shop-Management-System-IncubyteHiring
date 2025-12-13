@@ -6,7 +6,8 @@ import {
   updateSweet, 
   deleteSweet, 
   purchaseSweet,
-  restockSweet
+  restockSweet,
+  getSweetById
 } from '../controllers/sweetController';
 
 import { verifyToken, isAdmin } from '../middleware/authMiddleware';
@@ -16,6 +17,7 @@ const router = Router();
 // Public Routes
 router.get('/', getAllSweets);
 router.get('/search', searchSweets);
+router.get('/:id', getSweetById);
 
 // Protected Admin Routes
 router.post('/', verifyToken, isAdmin, createSweet);
