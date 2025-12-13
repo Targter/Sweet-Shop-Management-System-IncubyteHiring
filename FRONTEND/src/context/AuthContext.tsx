@@ -9,7 +9,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (token: string) => void;
+  login: (data: { username:  string; password: string }) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -29,7 +29,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const login = (token: string) => {
+  const login = async (data: { username: string; password: string }) => {
+    // simulate backend call or token
+    const token = "fake-jwt-token";
+    console.log("login called with", data);
     localStorage.setItem("token", token);
     setUser(decodeUser(token));
   };

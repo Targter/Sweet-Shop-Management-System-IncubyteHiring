@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-
-const Login = () => <h2>Login Page</h2>;
+import LoginPage from "./page/LoginPagee";
+// const Login = () => <h2>Login Page</h2>;
 const Register = () => <h2>Register Page</h2>;
 const Dashboard = () => <h2>Dashboard (Private)</h2>;
 const Admin = () => <h2>Admin Panel</h2>;
@@ -23,7 +23,7 @@ function App() {
         <Route path="/" element={<Navigate to="/dashboard" />} />
 
         {/* Public */}
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />
 
         {/* Private */}

@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { BrowserRouter } from "react-router-dom";
-import LoginPage from "./LoginPage";
+import LoginPage from "./LoginPagee";
 import * as AuthContext from "../context/AuthContext"; // Import context to mock it
 
 // Mock the AuthContext
@@ -51,7 +51,10 @@ describe("LoginPage", () => {
 
     // Wait for the mock to be called
     await waitFor(() => {
-      expect(mockLogin).toHaveBeenCalledWith("testuser", "password123");
+      expect(mockLogin).toHaveBeenCalledWith({
+        username: "testuser",
+        password: "password123",
+      });
     });
   });
 });
