@@ -1,43 +1,59 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-//
+import { BrowserRouter } from "react-router-dom";
 import DashboardPage from "./DashboardPage";
-// import * as sweetApi from "../api/sweets"; // We will create this next
-import { getSweets, purchaseSweet } from "../api/sweets";
-// Mock the API module
+import { getSweets } from "../api/sweets";
+
+// ---- MOCK API ----
 vi.mock("../api/sweets", () => ({
   getSweets: vi.fn(),
-  purchaseSweet: vi.fn(),
+}));
+
+// ---- MOCK AUTH CONTEXT ----
+vi.mock("../context/AuthContext", () => ({
+  useAuth: () => ({
+    user: { role: "user" },
+    logout: vi.fn(),
+  }),
+}));
+
+// ---- MOCK CART CONTEXT ----
+const addToCartMock = vi.fn();
+
+vi.mock("../context/CartContext", () => ({
+  useCart: () => ({
+    cart: [],
+    addToCart: addToCartMock,
+  }),
 }));
 
 describe("DashboardPage", () => {
-  it("renders a list of sweets fetched from API", async () => {
-    // Setup mock return value
-    const mockSweets = [
-      {
-        _id: "1",
-        name: "Chocolate Bar",
-        price: 5,
-        quantity: 10,
-        category: "Choco",
-      },
-      {
-        _id: "2",
-        name: "Gummy Bears",
-        price: 3,
-        quantity: 0,
-        category: "Gummy",
-      },
-    ];
+  const mockSweets = [
+    {
+      _id: "1",
+      name: "Chocolate Bar",
+      price: 5,
+      quantity: 10,
+      category: "Choco",
+    },
+    {
+      _id: "2",
+      name: "Gummy Bears",
+      price: 3,
+      quantity: 0,
+      category: "Gummy",
+    },
+  ];
 
+  it("renders a list of sweets fetched from API", async () => {
     (getSweets as any).mockResolvedValue({ data: mockSweets });
 
-    render(<DashboardPage />);
+    render(
+      <BrowserRouter>
+        <DashboardPage />
+      </BrowserRouter>
+    );
 
-    // Check for loading state (optional, depends on speed)
-    // expect(screen.getByText(/loading/i)).toBeInTheDocument();
-
-    // Wait for items to appear
     await waitFor(() => {
       expect(screen.getByText("Chocolate Bar")).toBeInTheDocument();
       expect(screen.getByText("$5")).toBeInTheDocument();
@@ -46,53 +62,35 @@ describe("DashboardPage", () => {
     });
   });
 
-  //
-  // 2. Add this new test
-  it("calls purchase API when buy button is clicked", async () => {
-    (purchaseSweet as any).mockResolvedValue({
-      data: { message: "Success" },
-    });
-
-    render(<DashboardPage />);
-
-    // Wait for items to load
-    await waitFor(() => screen.getByText("Chocolate Bar"));
-
-    // Find the Buy button for the first item (Chocolate Bar)
-    // We assume the first "Buy 1" button corresponds to the first item
-    const buyBtn = screen.getAllByRole("button", { name: /buy 1/i })[0];
-
-    fireEvent.click(buyBtn);
-
-    await waitFor(() => {
-      expect(purchaseSweet).toHaveBeenCalledWith("1", 1);
-    });
-  });
-
-  it("disables buy button when out of stock", async () => {
-    const mockSweets = [
-      {
-        _id: "1",
-        name: "Chocolate Bar",
-        price: 5,
-        quantity: 10,
-        category: "Choco",
-      },
-      {
-        _id: "2",
-        name: "Gummy Bears",
-        price: 3,
-        quantity: 0,
-        category: "Gummy",
-      },
-    ];
+  it("adds item to cart when Add to Cart button is clicked", async () => {
     (getSweets as any).mockResolvedValue({ data: mockSweets });
 
-    render(<DashboardPage />);
+    render(
+      <BrowserRouter>
+        <DashboardPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => screen.getByText("Chocolate Bar"));
+
+    const addBtn = screen.getByRole("button", { name: /add to cart/i });
+    fireEvent.click(addBtn);
+
+    expect(addToCartMock).toHaveBeenCalledWith(mockSweets[0]);
+  });
+
+  it("disables button when item is out of stock", async () => {
+    (getSweets as any).mockResolvedValue({ data: mockSweets });
+
+    render(
+      <BrowserRouter>
+        <DashboardPage />
+      </BrowserRouter>
+    );
+
     await waitFor(() => screen.getByText("Gummy Bears"));
 
-    // The second button should be disabled because Gummy Bears qty is 0
-    const soldOutButton = screen.getByRole("button", { name: /sold out/i });
-    expect(soldOutButton).toBeDisabled();
+    const soldOutBtn = screen.getByRole("button", { name: /sold out/i });
+    expect(soldOutBtn).toBeDisabled();
   });
 });
