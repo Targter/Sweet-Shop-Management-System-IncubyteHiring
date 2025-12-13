@@ -4,7 +4,9 @@ import {
   searchSweets, 
   createSweet, 
   updateSweet, 
-  deleteSweet 
+  deleteSweet, 
+  purchaseSweet,
+  restockSweet
 } from '../controllers/sweetController';
 
 import { verifyToken, isAdmin } from '../middleware/authMiddleware';
@@ -19,5 +21,9 @@ router.get('/search', searchSweets);
 router.post('/', verifyToken, isAdmin, createSweet);
 router.put('/:id', verifyToken, isAdmin, updateSweet);
 router.delete('/:id', verifyToken, isAdmin, deleteSweet);
+
+// 
+router.post('/:id/purchase', verifyToken, purchaseSweet); // User or Admin
+router.post('/:id/restock', verifyToken, isAdmin, restockSweet); // Admin only
 
 export default router;

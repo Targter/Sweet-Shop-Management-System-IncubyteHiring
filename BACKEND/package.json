@@ -34,7 +34,8 @@
     "start": "node dist/server.js",
     "test": "jest --runInBand",
     "test:auth": "jest tests/auth.test.ts --runInBand",
-    "test:sweets": "jest tests/sweets.test.ts --runInBand"
+    "test:sweets": "jest tests/sweets.test.ts --runInBand",
+    "test:inventory": "jest tests/inventory.test.ts --runInBand"
   },
   "keywords": [],
   "author": "",
