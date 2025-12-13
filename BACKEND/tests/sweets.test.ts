@@ -277,6 +277,17 @@ describe("Sweets API", () => {
     expect(res.body.length).toBe(1);
     expect(res.body[0].name).toBe("Chocolate");
   });
+  // 
+  // Add inside describe("Sweets API")
+it("GET /api/sweets/:id should return a single sweet", async () => {
+  // Create a sweet first
+  const sweet = new Sweet({ name: "Single", category: "Test", price: 1, quantity: 1 });
+  await sweet.save();
+
+  const res = await request(app).get(`/api/sweets/${sweet._id}`);
+  expect(res.statusCode).toBe(200);
+  expect(res.body.name).toBe("Single");
+});
 
   it("should filter sweets by category", async () => {
     const res = await request(app).get("/api/sweets/search?category=Hard");
@@ -309,7 +320,7 @@ describe("Sweets API", () => {
     const res = await request(app).get("/api/sweets/search");
 
     expect(res.statusCode).toBe(200);
-    expect(res.body.length).toBe(4);
+    expect(res.body.length).toBe(5);
   });
 
   // ---------------- UPDATE ----------------
