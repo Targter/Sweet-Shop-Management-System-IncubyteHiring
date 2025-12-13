@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { describe, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import EditSweetPage from "./EditSweetPage";
 import * as sweetApi from "../api/sweets";
@@ -50,6 +50,3 @@ describe("EditSweetPage", () => {
     });
   });
 });
-function expect(arg0: any) {
-  throw new Error("Function not implemented.");
-}
