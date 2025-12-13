@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { BrowserRouter } from "react-router-dom";
 import RegisterPage from "./RegisterPage";
 import * as authApi from "../api/auth"; // We will create this file next
