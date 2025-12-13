@@ -1,44 +1,211 @@
-import { useEffect, useState } from "react";
-import { getSweets, purchaseSweet } from "../api/sweets";
+// import { useEffect, useState } from "react";
+// import { getSweets, purchaseSweet } from "../api/sweets";
+// import type { Sweet } from "../types";
+// import { useAuth } from "../context/AuthContext";
+// import { useNavigate } from "react-router-dom";
+
+// const DashboardPage = () => {
+//   const navigate = useNavigate();
+//   const { user, logout } = useAuth();
+//   const [sweets, setSweets] = useState<Sweet[]>([]);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     fetchData();
+//   }, []);
+
+//   const fetchData = async () => {
+//     try {
+//       const response = await getSweets();
+//       setSweets(response.data);
+//     } catch (error) {
+//       console.error("Failed to fetch sweets", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleBuy = async (id: string) => {
+//     try {
+//       await purchaseSweet(id, 1);
+//       // Refresh data to show new stock level
+//       fetchData();
+//     } catch (error) {
+//       alert("Purchase failed!");
+//     }
+//   };
+
+//   if (loading) return <div className="p-8 text-center">Loading...</div>;
+
+//   return (
+//     <div className="p-8 bg-gray-50 min-h-screen">
+//       <h1 className="text-3xl font-bold mb-6">Sweet Shop Inventory</h1>
+//       <div className="space-x-4">
+//         {/* 1. Only show this button if user is Admin */}
+//         {user?.role === "admin" && (
+//           <button
+//             onClick={() => navigate("/admin")}
+//             className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+//           >
+//             Go to Admin Panel
+//           </button>
+//         )}
+
+//         <button
+//           onClick={logout}
+//           className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+//         >
+//           Logout
+//         </button>
+//       </div>
+//       {/*  */}
+
+//       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+//         {sweets.map((sweet) => (
+//           <div
+//             key={sweet._id}
+//             className="bg-white p-6 rounded shadow hover:shadow-lg transition"
+//           >
+//             <h3 className="text-xl font-bold text-gray-800">{sweet.name}</h3>
+//             <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mt-2">
+//               {sweet.category}
+//             </span>
+
+//             <div className="mt-4 flex justify-between items-center mb-4">
+//               <span className="text-lg font-semibold">${sweet.price}</span>
+//               {sweet.quantity > 0 ? (
+//                 <span className="text-green-600 font-medium">
+//                   {sweet.quantity} in stock
+//                 </span>
+//               ) : (
+//                 <span className="text-red-500 font-bold">Out of Stock</span>
+//               )}
+//             </div>
+
+//             {/* New Button Section */}
+//             <button
+//               onClick={() => handleBuy(sweet._id)}
+//               disabled={sweet.quantity === 0}
+//               className={`w-full py-2 px-4 rounded font-bold text-white transition
+//                 ${
+//                   sweet.quantity > 0
+//                     ? "bg-green-500 hover:bg-green-600"
+//                     : "bg-gray-300 cursor-not-allowed"
+//                 }`}
+//             >
+//               {sweet.quantity > 0 ? "Buy 1" : "Sold Out"}
+//             </button>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default DashboardPage;
+
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext"; // Import Cart Hook
+import { getSweets } from "../api/sweets";
 import type { Sweet } from "../types";
 
 const DashboardPage = () => {
+  const { user, logout } = useAuth();
+  const { addToCart, cart } = useCart(); // Use Cart
+  const navigate = useNavigate();
+
   const [sweets, setSweets] = useState<Sweet[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [filteredSweets, setFilteredSweets] = useState<Sweet[]>([]);
+  const [category, setCategory] = useState("All");
+  const [categories, setCategories] = useState<string[]>([]);
 
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Filter logic
+  useEffect(() => {
+    if (category === "All") {
+      setFilteredSweets(sweets);
+    } else {
+      setFilteredSweets(sweets.filter((s) => s.category === category));
+    }
+  }, [category, sweets]);
+
   const fetchData = async () => {
     try {
-      const response = await getSweets();
-      setSweets(response.data);
+      const res = await getSweets();
+      setSweets(res.data);
+      console.log(res.data);
+      // Extract unique categories for the filter dropdown
+      const uniqueCats = [
+        "All",
+        ...new Set(res.data.map((s: Sweet) => s.category)),
+      ];
+      setCategories(uniqueCats as string[]);
     } catch (error) {
-      console.error("Failed to fetch sweets", error);
-    } finally {
-      setLoading(false);
+      console.error("Error fetching sweets");
     }
   };
-
-  const handleBuy = async (id: string) => {
-    try {
-      await purchaseSweet(id, 1);
-      // Refresh data to show new stock level
-      fetchData();
-    } catch (error) {
-      alert("Purchase failed!");
-    }
-  };
-
-  if (loading) return <div className="p-8 text-center">Loading...</div>;
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Sweet Shop Inventory</h1>
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <h1 className="text-3xl font-bold">Sweet Shop</h1>
 
+        <div className="flex items-center gap-4">
+          {/* Cart Button */}
+          <button
+            onClick={() => navigate("/cart")}
+            className="relative bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
+          >
+            🛒 View Cart
+            {cart.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
+                {cart.reduce((acc, item) => acc + item.cartQty, 0)}
+              </span>
+            )}
+          </button>
+
+          {user?.role === "admin" && (
+            <button
+              onClick={() => navigate("/admin")}
+              className="bg-purple-600 text-white px-4 py-2 rounded"
+            >
+              Admin Panel
+            </button>
+          )}
+          <button
+            onClick={logout}
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+
+      {/* Filter Section */}
+      <div className="mb-6 flex items-center gap-2">
+        <span className="font-bold text-gray-700">Filter by Category:</span>
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="p-2 border rounded shadow-sm bg-white"
+        >
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {sweets.map((sweet) => (
+        {filteredSweets.map((sweet) => (
           <div
             key={sweet._id}
             className="bg-white p-6 rounded shadow hover:shadow-lg transition"
@@ -52,25 +219,24 @@ const DashboardPage = () => {
               <span className="text-lg font-semibold">${sweet.price}</span>
               {sweet.quantity > 0 ? (
                 <span className="text-green-600 font-medium">
-                  {sweet.quantity} in stock
+                  {sweet.quantity} left
                 </span>
               ) : (
                 <span className="text-red-500 font-bold">Out of Stock</span>
               )}
             </div>
 
-            {/* New Button Section */}
             <button
-              onClick={() => handleBuy(sweet._id)}
+              onClick={() => addToCart(sweet)}
               disabled={sweet.quantity === 0}
               className={`w-full py-2 px-4 rounded font-bold text-white transition
                 ${
                   sweet.quantity > 0
-                    ? "bg-green-500 hover:bg-green-600"
+                    ? "bg-blue-600 hover:bg-blue-700"
                     : "bg-gray-300 cursor-not-allowed"
                 }`}
             >
-              {sweet.quantity > 0 ? "Buy 1" : "Sold Out"}
+              {sweet.quantity > 0 ? "Add to Cart" : "Sold Out"}
             </button>
           </div>
         ))}
