@@ -16,3 +16,27 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
+export const login = async (req: Request, res: Response) => {
+  try {
+    console.log("called...post")
+    const { username, password } = req.body;
+    const user = await User.findOne({ username });
+    
+    if (!user || !user.password) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
+
+    const token = jwt.sign(
+      { id: user._id, role: user.role }, 
+      process.env.JWT_SECRET || 'secret', 
+      { expiresIn: '1h' }
+    );
+    
+    res.status(200).json({ token });
+  } catch (error) {
+    res.status(500).json({ error: "Error logging in" });
+  }
+};
