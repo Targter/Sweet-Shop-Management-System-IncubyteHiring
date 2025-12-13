@@ -1,9 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-// 
+//
 import DashboardPage from "./DashboardPage";
-import * as sweetApi from "../api/sweets"; // We will create this next
-
+// import * as sweetApi from "../api/sweets"; // We will create this next
+import { getSweets } from "../api/sweets";
 // Mock the API module
 vi.mock("../api/sweets", () => ({
   getSweets: vi.fn(),
@@ -29,7 +29,7 @@ describe("DashboardPage", () => {
       },
     ];
 
-    (sweetApi.getSweets as any).mockResolvedValue({ data: mockSweets });
+    (getSweets as any).mockResolvedValue({ data: mockSweets });
 
     render(<DashboardPage />);
 
