@@ -9,7 +9,8 @@ app.use(cors());
 app.use(json());
 
 app.use("/api/auth", authRoutes); // <--- Add this line
-// app.use("/api/sweets", sweetRoutes);
+// Initialize sweet routes
+app.use("/api/sweets", sweetRoutes);
 // Placeholder for routes
 app.get("/", (req, res) => { res.send("API Running"); });
 
