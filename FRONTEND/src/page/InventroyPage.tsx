@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { getSweets, deleteSweet } from "../api/sweets";
 import type { Sweet } from "../types";
 
-// --- Retro Icons ---
+// --- AbSweets Icons ---
 const Icons = {
   Back: () => (
     <svg

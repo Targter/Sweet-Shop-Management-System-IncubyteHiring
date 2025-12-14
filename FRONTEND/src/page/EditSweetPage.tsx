@@ -8,8 +8,9 @@ export interface EditSweetFormData {
   category: string;
   price: number;
   quantity: number;
+  image?: string;
 }
-// --- Retro Icons ---
+// --- AbSweets Icons ---
 const Icons = {
   Back: () => (
     <svg
@@ -75,6 +76,7 @@ const EditSweetPage = () => {
           setValue("category", res.data.category);
           setValue("price", res.data.price);
           setValue("quantity", res.data.quantity);
+          setValue("image", res.data.image); // <--- Add this li
           setLoading(false);
         })
         .catch(() => {

@@ -76,7 +76,7 @@ describe("DashboardPage", () => {
 
     await waitFor(() => screen.getByText("Chocolate Bar"));
 
-    // The Retro UI uses "+" as the button label
+    // The AbSweets UI uses "+" as the button label
     // We have multiple items, so we grab all "+" buttons.
     // Index 0 corresponds to "Chocolate Bar" (the first item).
     const addButtons = screen.getAllByRole("button", { name: "+" });

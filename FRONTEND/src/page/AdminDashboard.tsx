@@ -21,7 +21,7 @@ interface AdminStats {
   }>;
 }
 
-// --- Retro Icons ---
+// --- AbSweets Icons ---
 const Icons = {
   Home: () => (
     <svg

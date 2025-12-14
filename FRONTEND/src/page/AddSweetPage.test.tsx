@@ -11,6 +11,7 @@ vi.mock("../api/sweets", () => ({
 
 describe("AddSweetPage", () => {
   it("submits form with correct values", async () => {
+    // Mock the API response
     (sweetApi.createSweet as any).mockResolvedValue({ data: {} });
 
     render(
@@ -19,29 +20,39 @@ describe("AddSweetPage", () => {
       </BrowserRouter>
     );
 
-    // Fill inputs
-    fireEvent.change(screen.getByLabelText(/name/i), {
+    // 1. Fill inputs (Updated selectors to match UI labels)
+    fireEvent.change(screen.getByLabelText(/sweet name/i), {
       target: { value: "New Candy" },
     });
+
     fireEvent.change(screen.getByLabelText(/category/i), {
       target: { value: "Hard" },
     });
+
     fireEvent.change(screen.getByLabelText(/price/i), {
       target: { value: "5" },
     });
-    fireEvent.change(screen.getByLabelText(/quantity/i), {
+
+    // FIX: Label is "Initial Stock", not "Quantity"
+    fireEvent.change(screen.getByLabelText(/initial stock/i), {
       target: { value: "50" },
     });
 
-    // Click submit
-    fireEvent.click(screen.getByRole("button", { name: /create/i }));
+    // 2. Click submit
+    // FIX: Button text is "Save to Pantry", so we search for /save/i instead of /create/i
+    fireEvent.click(screen.getByRole("button", { name: /save/i }));
+
+    // 3. Assertions
     await waitFor(() => {
-      expect(sweetApi.createSweet).toHaveBeenCalledWith({
-        name: "New Candy",
-        category: "Hard",
-        price: 5, // Should be number
-        quantity: 50, // Should be number
-      });
+      // Use objectContaining because the form might send extra fields like 'image' (empty string)
+      expect(sweetApi.createSweet).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: "New Candy",
+          category: "Hard",
+          price: 5, // React Hook Form `valueAsNumber` converts this
+          quantity: 50, // React Hook Form `valueAsNumber` converts this
+        })
+      );
     });
   });
 });

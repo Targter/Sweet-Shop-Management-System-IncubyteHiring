@@ -3,7 +3,7 @@ import { useCart } from "../context/CartContext";
 import { purchaseSweet } from "../api/sweets";
 import { useNavigate } from "react-router-dom";
 
-// --- Retro Icons ---
+// --- AbSweets Icons ---
 const Icons = {
   Back: () => (
     <svg
@@ -110,7 +110,7 @@ const CartPage = () => {
               <span className="text-xl">🍭</span>
             </div>
             <h1 className="text-2xl font-serif font-black tracking-tighter italic">
-              Retro<span className="text-[#E76F51]">Sweets</span>
+              AbSweets<span className="text-[#E76F51]">Sweets</span>
             </h1>
           </div>
 
@@ -161,9 +161,11 @@ const CartPage = () => {
                   className="flex flex-col sm:flex-row items-center gap-6 bg-white border-2 border-[#2C241B] p-6 rounded-2xl shadow-[4px_4px_0px_0px_#2C241B] relative"
                 >
                   {/* Image Placeholder */}
-                  <div className="w-full sm:w-24 h-24 bg-[#FEFBEA] rounded-lg border-2 border-[#2C241B] flex items-center justify-center text-3xl shrink-0">
-                    🍪
-                  </div>
+                  <img
+                    src={item.image || "https://placehold.co/100"}
+                    alt={item.name}
+                    className="w-16 h-16 object-cover rounded bg-gray-100"
+                  />
 
                   {/* Details */}
                   <div className="flex-grow text-center sm:text-left">
@@ -258,10 +260,10 @@ const CartPage = () => {
       <footer className="bg-[#2C241B] text-[#FEFBEA] border-t-4 border-[#E76F51]">
         <div className="max-w-7xl mx-auto px-6 py-8 text-center">
           <p className="font-serif italic text-xl mb-2">
-            Thank you for shopping with RetroSweets!
+            Thank you for shopping with AbSweets!
           </p>
           <p className="text-xs opacity-50 uppercase tracking-widest">
-            © 2025 RetroSweets Inc.
+            © 2025 AbSweets Inc.
           </p>
         </div>
       </footer>

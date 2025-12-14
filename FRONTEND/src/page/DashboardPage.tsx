@@ -5,7 +5,7 @@ import { useCart } from "../context/CartContext";
 import { getSweets } from "../api/sweets";
 import type { Sweet } from "../types";
 
-// --- Retro Icon Set ---
+// --- AbSweets Icon Set ---
 const Icons = {
   Cart: () => (
     <svg
@@ -116,6 +116,7 @@ const DashboardPage = () => {
       );
     }
     setFilteredSweets(result);
+    console.log("filteredSweets updated", result);
   }, [category, searchTerm, sweets]);
 
   const fetchData = async () => {
@@ -155,7 +156,7 @@ const DashboardPage = () => {
               <span className="text-xl">🍭</span>
             </div>
             <h1 className="text-2xl font-serif font-black tracking-tighter italic hidden sm:block">
-              Retro<span className="text-[#E76F51]">Sweets</span>
+              Ab<span className="text-[#E76F51]">Sweets</span>
             </h1>
           </div>
 
@@ -322,10 +323,22 @@ const DashboardPage = () => {
                   )}
                 </div>
 
-                <div className="h-40 bg-[#FEFBEA] border-b-2 border-[#2C241B] flex items-center justify-center relative">
-                  <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#2C241B_1px,transparent_1px)] [background-size:8px_8px]"></div>
-                  <span className="text-5xl drop-shadow-lg group-hover:scale-110 transition-transform">
-                    🧁
+                <div className="h-48 overflow-hidden relative">
+                  <img
+                    src={
+                      sweet.image ||
+                      "https://placehold.co/400x300?text=No+Image"
+                    }
+                    alt={sweet.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        "https://placehold.co/400x300?text=Error";
+                    }}
+                  />
+                  {/* Category Badge on top of image */}
+                  <span className="absolute top-2 right-2 bg-white/90 text-blue-800 text-xs font-bold px-2 py-1 rounded shadow">
+                    {sweet.category}
                   </span>
                 </div>
 
@@ -365,7 +378,7 @@ const DashboardPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             <div className="space-y-4">
               <h2 className="text-3xl font-serif font-black italic">
-                Retro<span className="text-[#E76F51]">Sweets</span>
+                Ab<span className="text-[#E76F51]">Sweets</span>
               </h2>
               <p className="text-sm opacity-80 max-w-xs leading-relaxed">
                 Bringing back the golden age of confectionery. Est. 2025.
@@ -438,7 +451,7 @@ const DashboardPage = () => {
           </div>
 
           <div className="mt-12 pt-6 border-t border-[#FEFBEA]/20 text-center text-xs opacity-50 uppercase tracking-widest">
-            © 2025 RetroSweets Inc. All rights reserved.
+            © 2025 AbSweets Inc. All rights reserved.
           </div>
         </div>
       </footer>

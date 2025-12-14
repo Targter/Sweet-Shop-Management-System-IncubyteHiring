@@ -42,7 +42,7 @@ describe("CartPage", () => {
     // 1. Check Render
     expect(screen.getByText("Test Sweet")).toBeInTheDocument();
 
-    // The Retro UI splits "Total" and the price into separate spans
+    // The AbSweets UI splits "Total" and the price into separate spans
     expect(screen.getByText("Total")).toBeInTheDocument();
 
     // FIX: Use getAllByText because "$20.00" appears in item row, subtotal, and total

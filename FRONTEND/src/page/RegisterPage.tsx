@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { registerUser } from "../api/auth";
 import { useNavigate, Link } from "react-router-dom";
 
-// --- Retro Icons ---
+// --- AbSweets Icons ---
 const Icons = {
   User: () => (
     <svg

@@ -38,7 +38,7 @@ describe("LoginPage Component", () => {
     );
   };
 
-  test("renders the retro login UI correctly", () => {
+  test("renders the AbSweets login UI correctly", () => {
     renderComponent();
 
     expect(screen.getByText(/Welcome/i)).toBeInTheDocument();

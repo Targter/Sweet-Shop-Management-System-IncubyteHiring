@@ -9,7 +9,7 @@ interface LoginFormData {
   password: string;
 }
 
-// --- Retro Icons ---
+// --- AbSweets Icons ---
 const Icons = {
   User: () => (
     <svg
