@@ -160,25 +160,29 @@ GTsweets/
 │
 ├──Frontend/
 │   ├── src/
-│   │   ├── components/        # Reusable UI components
-│   │   │   ├── Navbar.tsx
-│   │   │   ├── SweetCard.tsx
-│   │   │   └── CartItem.tsx
 │   │   ├── pages/             # Application views/pages
-│   │   │   ├── HomePage.tsx
-│   │   │   ├── AdminDashboard.tsx
 │   │   │   ├── AddSweetPage.tsx
+│   │   │   ├── AdminDashboard.tsx
+│   │   │   ├── CartPage.tsx
 │   │   │   ├── LoginPage.tsx
 │   │   │   └── RegisterPage.tsx
+│   │   │   └── EditSWeetPage.tsx
 │   │   ├── api/               # API service functions
 │   │   │   ├── auth.ts
-│   │   │   ├── sweets.ts
-│   │   │   └── cart.ts
+│   │   │   ├── axios.ts
+│   │   │   └── sweets.ts
 │   │   ├── context/           # Global state management
 │   │   │   └── AuthContext.tsx
+│   │   │   └── cartContext.tsx
 │   │   └── App.tsx            # Root component with routing
-│   ├── tests/                 # Vitest component tests
+│   ├── pages/                 # Vitest component tests
 │   │   └── AddSweetPage.test.tsx
+│   │   └── AdminDashboard.test.tsx
+│   │   └── CartPage.test.tsx
+│   │   └── LoginPage.test.tsx
+│   │   └── RegisterPage.test.tsx
+│   │   └── EditSweet.test.tsx
+│   │   └── Inventory.test.tsx
 │   └── package.json
 ```
 
@@ -186,7 +190,7 @@ GTsweets/
 
 ## 🚀 Getting Started
 
-Follow these instructions to run **Sugar Rush** locally on your machine.
+Follow these instructions to run **Ab Sweets** locally on your machine.
 
 ### Prerequisites
 
@@ -200,16 +204,16 @@ Follow these instructions to run **Sugar Rush** locally on your machine.
 ```bash
 # Clone the repository
 git clone https://github.com/Targter/Sweet-Shop-Management-System-IncubyteHiring.git
-cd Sweet-Shop-Management-System-IncubyteHiring/GTS-backend
+cd Sweet-Shop-Management-System-IncubyteHiring/Backend
 
 # Install dependencies
 npm install
 
 # Create environment variables file
-# Create a file named .env in /GTS-backend and add:
-MONGODB_URI=mongodb://localhost:27017/sugarrush
+# Create a file named .env in /backend and add:
+MONGODB_URI=mongodb://localhost:27017/abdata
 # OR for MongoDB Atlas:
-# MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/sugarrush
+# MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/abdata
 
 JWT_SECRET=your_super_secure_jwt_secret_key_here
 PORT=5000
@@ -228,13 +232,13 @@ npm run dev
 
 ```bash
 # Open a new terminal and navigate to frontend
-cd Sweet-Shop-Management-System-IncubyteHiring/GTS-frontend
+cd Sweet-Shop-Management-System-IncubyteHiring/Frontend
 
 # Install dependencies
 npm install
 
 # Create environment variables file
-# Create a file named .env in /GTS-frontend and add:
+# Create a file named .env in /frontend and add:
 VITE_API_URL=http://localhost:5000/api
 
 # Run frontend tests (optional but recommended)
@@ -251,15 +255,15 @@ npm run dev
 **Admin Account:**
 
 ```
-Email: admin@sugarrush.com
-Password: admin123
+Email: abhay@mail
+Password: abhay
 ```
 
 **Customer Account:**
 
 ```
-Email: customer@sugarrush.com
-Password: customer123
+Email: abhay_user@mail
+Password: abhay123
 ```
 
 ---
@@ -271,8 +275,7 @@ Password: customer123
 | Method | Endpoint             | Access    | Description           | Request Body                     |
 | :----- | :------------------- | :-------- | :-------------------- | :------------------------------- |
 | `POST` | `/api/auth/register` | Public    | Register new user     | `{name, email, password, role?}` |
-| `POST` | `/api/auth/login`    | Public    | Login & get JWT token | `{email, password}`              |
-| `GET`  | `/api/auth/profile`  | Protected | Get user profile      | -                                |
+| `POST` | `/api/auth/login`    | Public    | Login & get JWT token | `{email, password}`
 
 ### Sweet Management Endpoints
 
@@ -333,13 +336,16 @@ This project maintains high test coverage following TDD principles with comprehe
 ### Backend Testing (Jest + Supertest)
 
 ```bash
-cd GTS-backend
+cd Backend
 
 # Run all backend tests
 npm test
 
 # Run tests in watch mode
-npm run test:watch
+npm run test:auth
+npm run test:sweets
+npm run test:inventory
+
 
 # Run tests with coverage report
 npm run test -- --coverage
@@ -366,16 +372,16 @@ Coverage:
 ### Frontend Testing (Vitest + React Testing Library)
 
 ```bash
-cd GTS-frontend
+cd Frontend
 
 # Run all frontend tests
 npm test
 
 # Run tests in watch mode
-npm run test:watch
+npm run test
 
 # Run tests with UI
-npm run test:ui
+npm run test:AdminDashboard
 
 # Run tests with coverage
 npm run test -- --coverage
@@ -433,19 +439,19 @@ export const createSweet = async (payload: CreateSweetPayload) => {
 
 ### Frontend Deployment (Vercel)
 
-**Live URL:** [https://g-tsweets.vercel.app](https://g-tsweets.vercel.app)
+**Live URL:** [https://incubytein.abhaybansal.in](https://incubytein.abhaybansal.in)
 
 **Deployment Steps:**
 
 1. Connect GitHub repository to Vercel
 2. Set build command: `npm run build`
 3. Set output directory: `dist`
-4. Add environment variable: `VITE_API_URL=https://gtsweets-backend.onrender.com/api`
+4. Add environment variable: `VITE_API_URL=https://sweet-shop-management-system-k3ft.onrender.com/api`
 5. Deploy automatically on every push to main branch
 
 ### Backend Deployment (Render)
 
-**API URL:** [https://gtsweets-backend.onrender.com](https://gtsweets-backend.onrender.com)
+**API URL:** [https://sweet-shop-management-system-k3ft.onrender.com/](https://sweet-shop-management-system-k3ft.onrender.com/)
 
 **Deployment Steps:**
 
