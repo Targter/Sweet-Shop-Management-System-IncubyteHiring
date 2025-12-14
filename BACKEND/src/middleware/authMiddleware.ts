@@ -1,9 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 // Extend Express Request to include user info
+export interface IUserPayload extends JwtPayload {
+  id: string;
+  role: string;
+}
+
+// 2. Extend Express Request with specific typ
+// e
 export interface AuthRequest extends Request {
-  user?: any;
+  user?: IUserPayload
 }
 
 export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -12,7 +19,7 @@ export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction)
   if (!token) return res.status(401).json({ error: 'Access denied' });
 
   try {
-    const verified = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+    const verified = jwt.verify(token, process.env.JWT_SECRET || 'secret') as IUserPayload;
     req.user = verified;
     next();
   } catch (err) {

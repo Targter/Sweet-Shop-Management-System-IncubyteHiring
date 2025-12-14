@@ -1,8 +1,12 @@
 import { Request, Response } from 'express';
-// import Sweet from '../BACKEND/src/models/Sweet';
 import Sweet from '../models/Sweet';
+import Order from '../models/Order'; // <--- Import Order
+import User from '../models/User';   // <--- Import User (for counting customers)
 
-// List all (Public)
+// --- PUBLIC ROUTES ---
+
+
+// List all
 export const getAllSweets = async (req: Request, res: Response) => {
   try {
     const sweets = await Sweet.find();
@@ -12,7 +16,7 @@ export const getAllSweets = async (req: Request, res: Response) => {
   }
 };
 
-// get by id : 
+// Get Single by ID
 export const getSweetById = async (req: Request, res: Response) => {
   try {
     const sweet = await Sweet.findById(req.params.id);
@@ -23,24 +27,14 @@ export const getSweetById = async (req: Request, res: Response) => {
   }
 };
 
-// Search (Public)
+// Search & Filter
 export const searchSweets = async (req: Request, res: Response) => {
   try {
-     const { q, category, minPrice, maxPrice } = req.query;
-
+    const { q, category, minPrice, maxPrice } = req.query;
     const filter: any = {};
 
-    // Name search
-    if (q) {
-      filter.name = { $regex: q as string, $options: "i" };
-    }
-
-    // Category filter
-    if (category) {
-      filter.category = category;
-    }
-
-    // Price range filter
+    if (q) filter.name = { $regex: q as string, $options: "i" };
+    if (category) filter.category = category;
     if (minPrice || maxPrice) {
       filter.price = {};
       if (minPrice) filter.price.$gte = Number(minPrice);
@@ -54,7 +48,9 @@ export const searchSweets = async (req: Request, res: Response) => {
   }
 };
 
-// Create (Admin)
+// --- ADMIN CRUD ---
+
+// Create
 export const createSweet = async (req: Request, res: Response) => {
   try {
     const sweet = new Sweet(req.body);
@@ -65,7 +61,7 @@ export const createSweet = async (req: Request, res: Response) => {
   }
 };
 
-// Update (Admin)
+// Update
 export const updateSweet = async (req: Request, res: Response) => {
   try {
     const sweet = await Sweet.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -76,7 +72,7 @@ export const updateSweet = async (req: Request, res: Response) => {
   }
 };
 
-// Delete (Admin)
+// Delete
 export const deleteSweet = async (req: Request, res: Response) => {
   try {
     const sweet = await Sweet.findByIdAndDelete(req.params.id);
@@ -87,31 +83,7 @@ export const deleteSweet = async (req: Request, res: Response) => {
   }
 };
 
-
-// Purchase Sweet (Authenticated Users)
-export const purchaseSweet = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const { quantity } = req.body;
-    const buyQty = quantity || 1;
-
-    const sweet = await Sweet.findById(id);
-    if (!sweet) return res.status(404).json({ error: 'Sweet not found' });
-
-    if (sweet.quantity < buyQty) {
-      return res.status(400).json({ error: `Insufficient stock. Only ${sweet.quantity} left.` });
-    }
-
-    sweet.quantity -= buyQty;
-    await sweet.save();
-    
-    res.json({ message: 'Purchase successful', quantity: sweet.quantity });
-  } catch (error) {
-    res.status(500).json({ error: 'Purchase failed' });
-  }
-};
-
-// Restock Sweet (Admin Only)
+// Restock
 export const restockSweet = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -127,5 +99,92 @@ export const restockSweet = async (req: Request, res: Response) => {
     res.json({ message: 'Restock successful', quantity: sweet.quantity });
   } catch (error) {
     res.status(500).json({ error: 'Restock failed' });
+  }
+};
+
+// --- TRANSACTIONS ---
+
+// Purchase Sweet (Updated to Record Order)
+export const purchaseSweet = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { quantity } = req.body;
+    const buyQty = quantity || 1;
+
+    // 1. Check Stock
+    const sweet = await Sweet.findById(id);
+    if (!sweet) return res.status(404).json({ error: 'Sweet not found' });
+
+    if (sweet.quantity < buyQty) {
+      return res.status(400).json({ error: `Insufficient stock. Only ${sweet.quantity} left.` });
+    }
+
+    // 2. Reduce Stock
+    sweet.quantity -= buyQty;
+    await sweet.save();
+
+    // 3. Create Order Record
+    const userId = (req as any).user?.id; // Assumes authMiddleware attaches user
+    if (userId) {
+      await Order.create({
+        user: userId,
+        items: [{
+          sweet: sweet._id,
+          name: sweet.name,
+          quantity: buyQty,
+          price: sweet.price
+        }],
+        totalAmount: sweet.price * buyQty
+      });
+    }
+
+    res.json({ message: 'Purchase successful', quantity: sweet.quantity });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Purchase failed' });
+  }
+};
+
+// --- ANALYTICS (NEW) ---
+
+export const getDashboardStats = async (req: Request, res: Response) => {
+  try {
+    // 1. Basic Counts
+    const totalProducts = await Sweet.countDocuments();
+    const totalCustomers = await User.countDocuments({ role: 'user' });
+    const totalOrders = await Order.countDocuments();
+
+    // 2. Financials (Revenue)
+    const orders = await Order.find();
+    const totalRevenue = orders.reduce((sum, order) => sum + order.totalAmount, 0);
+    const avgOrderValue = totalOrders > 0 ? (totalRevenue / totalOrders).toFixed(2) : 0;
+
+    // 3. Low Stock Items (<= 5)
+    const lowStockItems = await Sweet.find({ quantity: { $lte: 5 } }).limit(5);
+
+    // 4. Recent Orders
+    const recentOrders = await Order.find()
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .populate('user', 'username');
+
+    // 5. Orders Today
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const todayOrders = await Order.countDocuments({ createdAt: { $gte: startOfDay } });
+
+    res.json({
+      totalRevenue,
+      totalOrders,
+      totalProducts,
+      totalCustomers,
+      avgOrderValue,
+      todayOrders,
+      lowStockItems,
+      recentOrders
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error fetching stats' });
   }
 };
