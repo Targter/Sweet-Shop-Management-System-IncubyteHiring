@@ -1,8 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { getSweetById, updateSweet } from "../api/sweets";
 
+export interface EditSweetFormData {
+  name: string;
+  category: string;
+  price: number;
+  quantity: number;
+}
 // --- Retro Icons ---
 const Icons = {
   Back: () => (
@@ -58,7 +64,7 @@ const Icons = {
 const EditSweetPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue } = useForm<EditSweetFormData>();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -78,7 +84,7 @@ const EditSweetPage = () => {
     }
   }, [id, setValue, navigate]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: EditSweetFormData) => {
     if (!id) return;
     try {
       await updateSweet(id, data);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
@@ -72,7 +72,8 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [role, setRole] = useState<"customer" | "admin">("customer");
-
+  console.log("Current Role:", role);
+  console.log("Errors:", errors);
   // Helper to pre-fill credentials based on role (Optional convenience)
   useEffect(() => {
     if (role === "admin") {

@@ -1,9 +1,13 @@
 import api from './axios';
 
-export const registerUser = (data: any) => {
+export interface RegisterData {
+  username: string;
+  password: string;
+}
+export const registerUser = (data: RegisterData) => {
   return api.post('/auth/register', data);
 };
 
-export const loginUser = (data: any) => {
+export const loginUser = (data: RegisterData) => {
   return api.post('/auth/login', data);
 };

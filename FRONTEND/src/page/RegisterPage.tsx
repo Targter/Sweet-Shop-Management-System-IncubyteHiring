@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { registerUser } from "../api/auth";
 import { useNavigate, Link } from "react-router-dom";
@@ -54,17 +54,22 @@ const Icons = {
   ),
 };
 
+export interface RegisterFormData {
+  username: string;
+  password: string;
+}
+
 const RegisterPage = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<RegisterFormData>();
 
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: RegisterFormData) => {
     try {
       await registerUser(data);
       // Optional: Add a success flash message logic here if you have one
@@ -119,7 +124,6 @@ const RegisterPage = () => {
                   {...register("username", { required: true })}
                   className="w-full bg-[#FEFBEA] border-2 border-[#2C241B] rounded-xl pl-10 pr-4 py-3 font-bold placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-[#E9C46A]/50 focus:border-[#E9C46A] transition-all"
                   placeholder="Type a username..."
-                  
                 />
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                   <Icons.User />

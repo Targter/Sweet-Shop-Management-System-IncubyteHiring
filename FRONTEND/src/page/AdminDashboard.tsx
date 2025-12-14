@@ -1,9 +1,25 @@
-
-
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAdminStats, getSweets, deleteSweet } from "../api/sweets";
 import type { Sweet } from "../types";
+
+interface AdminStats {
+  totalRevenue: number;
+  totalOrders: number;
+  totalProducts: number;
+  totalCustomers: number;
+  recentOrders: Array<{
+    _id: string;
+    user?: { username: string };
+    totalAmount: number;
+    createdAt: string;
+  }>;
+  lowStockItems: Array<{
+    _id: string;
+    name: string;
+    quantity: number;
+  }>;
+}
 
 // --- Retro Icons ---
 const Icons = {
@@ -127,7 +143,7 @@ const Icons = {
 // 1. OVERVIEW TAB (Stats & Ledger)
 // ==========================================
 const OverviewTab = () => {
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<AdminStats | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -217,27 +233,29 @@ const OverviewTab = () => {
                     </td>
                   </tr>
                 ) : (
-                  stats.recentOrders.map((order: any) => (
-                    <tr
-                      key={order._id}
-                      className="hover:bg-[#FEFBEA] transition-colors"
-                    >
-                      <td className="p-4 font-bold">
-                        {order.user?.username || "Guest"}
-                      </td>
-                      <td className="p-4 font-mono font-bold text-[#E76F51]">
-                        ${order.totalAmount}
-                      </td>
-                      <td className="p-4 text-xs font-bold text-gray-500">
-                        {new Date(order.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="p-4">
-                        <span className="border border-[#2A9D8F] text-[#2A9D8F] px-2 py-0.5 rounded text-[10px] font-bold uppercase">
-                          Paid
-                        </span>
-                      </td>
-                    </tr>
-                  ))
+                  stats.recentOrders.map(
+                    (order: AdminStats["recentOrders"][number]) => (
+                      <tr
+                        key={order._id}
+                        className="hover:bg-[#FEFBEA] transition-colors"
+                      >
+                        <td className="p-4 font-bold">
+                          {order.user?.username || "Guest"}
+                        </td>
+                        <td className="p-4 font-mono font-bold text-[#E76F51]">
+                          ${order.totalAmount}
+                        </td>
+                        <td className="p-4 text-xs font-bold text-gray-500">
+                          {new Date(order.createdAt).toLocaleDateString()}
+                        </td>
+                        <td className="p-4">
+                          <span className="border border-[#2A9D8F] text-[#2A9D8F] px-2 py-0.5 rounded text-[10px] font-bold uppercase">
+                            Paid
+                          </span>
+                        </td>
+                      </tr>
+                    )
+                  )
                 )}
               </tbody>
             </table>
@@ -255,19 +273,21 @@ const OverviewTab = () => {
                 Everything is stocked!
               </li>
             ) : (
-              stats.lowStockItems.map((item: any) => (
-                <li
-                  key={item._id}
-                  className="p-3 border-b border-[#2C241B]/10 flex justify-between items-center hover:bg-white/50"
-                >
-                  <span className="font-bold text-sm text-[#2C241B]">
-                    {item.name}
-                  </span>
-                  <span className="font-black text-[#E76F51] text-sm">
-                    {item.quantity} left
-                  </span>
-                </li>
-              ))
+              stats.lowStockItems.map(
+                (item: AdminStats["lowStockItems"][number]) => (
+                  <li
+                    key={item._id}
+                    className="p-3 border-b border-[#2C241B]/10 flex justify-between items-center hover:bg-white/50"
+                  >
+                    <span className="font-bold text-sm text-[#2C241B]">
+                      {item.name}
+                    </span>
+                    <span className="font-black text-[#E76F51] text-sm">
+                      {item.quantity} left
+                    </span>
+                  </li>
+                )
+              )
             )}
           </ul>
         </div>
@@ -463,7 +483,9 @@ const AdminDashboard = () => {
           {navItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id as any)}
+              onClick={() =>
+                setActiveTab(item.id as "overview" | "inventory" | "add")
+              }
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold transition-all duration-200 border-2
                     ${
                       activeTab === item.id

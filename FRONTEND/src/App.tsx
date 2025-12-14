@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { useAuth } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 
 // Pages
@@ -10,7 +10,7 @@ import CartPage from "./page/CartPage";
 
 // Admin Pages
 import AdminDashboard from "./page/AdminDashboard";
-import InventoryPage from "./page/InventroyPage"; // Fixed spelling here
+// import InventoryPage from "./page/InventroyPage"; // Fixed spelling here
 import AddSweetPage from "./page/AddSweetPage";
 import EditSweetPage from "./page/EditSweetPage";
 
