@@ -119,12 +119,12 @@ _Browse through our collection of delicious sweets with real-time stock availabi
 ![Admin Dashboard](https://github.com/Targter/Sweet-Shop-Management-System-IncubyteHiring/blob/5f11ff7991279141e1476919edfdb132807812a1/FRONTEND/public/AdminDashboard.png)
 _Manage inventory, add new sweets, update prices, and track stock levels_
 
-### Authentication
+### Inventory
 
 ![Inventory Page](https://github.com/Targter/Sweet-Shop-Management-System-IncubyteHiring/blob/5f11ff7991279141e1476919edfdb132807812a1/FRONTEND/public/Inventory.png)
 \_Inventory Page , Edit , Update and Remove the Carts.
 
-### User Dashboard
+### User - Cart
 
 ![Cart Dashboard](https://github.com/Targter/Sweet-Shop-Management-System-IncubyteHiring/blob/5f11ff7991279141e1476919edfdb132807812a1/FRONTEND/public/image.png)
 _View order history, account details, and manage profile_
@@ -134,8 +134,8 @@ _View order history, account details, and manage profile_
 ## 📂 Project Structure
 
 ```text
-GTsweets/
-├── GTS-backend/
+INCUBYTE-HIRING/
+├── backend/
 │   ├── src/
 │   │   ├── controllers/       # Request handlers and business logic
 │   │   │   ├── authController.ts
@@ -272,10 +272,10 @@ Password: abhay123
 
 ### Authentication Endpoints
 
-| Method | Endpoint             | Access    | Description           | Request Body                     |
-| :----- | :------------------- | :-------- | :-------------------- | :------------------------------- |
-| `POST` | `/api/auth/register` | Public    | Register new user     | `{name, email, password, role?}` |
-| `POST` | `/api/auth/login`    | Public    | Login & get JWT token | `{email, password}`
+| Method | Endpoint             | Access | Description           | Request Body                     |
+| :----- | :------------------- | :----- | :-------------------- | :------------------------------- |
+| `POST` | `/api/auth/register` | Public | Register new user     | `{name, email, password, role?}` |
+| `POST` | `/api/auth/login`    | Public | Login & get JWT token | `{email, password}`              |
 
 ### Sweet Management Endpoints
 
