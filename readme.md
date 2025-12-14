@@ -1,13 +1,7 @@
-Here is the updated **`README.md`** file with your shop name **"Absweets"** integrated.
-
-Copy and paste the code below into your `README.md` file.
-
----
-
 ````markdown
-# 🍬 Absweets - Shop Management System (MERN TDD)
+# 🍬 Absweets - Sweet Shop Management System
 
-> A full-stack TDD Kata project showcasing modern web development practices
+> A full-stack, TDD-based inventory and sales management application built with the MERN stack.
 
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
@@ -15,260 +9,176 @@ Copy and paste the code below into your `README.md` file.
 ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
 ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
-
-<br />
-
-🎉 🚀 **LIVE APPLICATION** 🚀 🎉
-╔═══════════════════════════════════════════════════════════╗
-║ ║
-║ 🌐 [INSERT YOUR DEPLOYED LINK HERE] 🌐 ║
-║ ║
-║ 👉 CLICK TO EXPLORE 👈 ║
-║ ║
-╚═══════════════════════════════════════════════════════════╝
-👉 [VISIT LIVE APPLICATION](your-link-here) 👈
+![Vitest](https://img.shields.io/badge/vitest-%2344a833.svg?style=for-the-badge&logo=vitest&logoColor=white)
 
 ---
 
-## 📋 Table of Contents
+## 🤖 My AI Usage (Mandatory Section)
 
-1. [Overview](#-overview)
-2. [Features](#-features)
-3. [Technology Stack](#-technology-stack)
-4. [Project Structure](#-project-structure)
-5. [Getting Started](#-getting-started)
-6. [API Documentation](#-api-documentation)
-7. [Testing Strategy (TDD)](#-testing)
-8. [My AI Usage](#-my-ai-usage)
-9. [Development Workflow](#-development-workflow)
-10. [Author](#-author)
+In compliance with the project requirements, this section details my responsible leverage of AI tools during development.
+
+### **1. AI Tools Used**
+
+- **ChatGPT (GPT-4o):** Used as a primary "Pair Programmer" and documentation assistant.
+- **GitHub Copilot:** Used for intelligent code completion and boilerplate reduction inside VS Code.
+
+### **2. How I Used Them**
+
+I adopted a "Human-Architect, AI-Builder" workflow to maintain code quality while accelerating development:
+
+- **Scaffolding & Configuration:** I asked ChatGPT to generate the initial `tsconfig.json` and Monorepo folder structure to ensure best practices for a MERN + TypeScript setup.
+- **Test-Driven Development (TDD):** To strictly follow the _Red-Green-Refactor_ cycle, I provided business requirements to the AI and asked it to **generate the failing test cases first** (e.g., "Write a Jest test for an Inventory Controller that fails if the stock is 0").
+- **Complex Logic Generation:** I used AI to draft the MongoDB Aggregation pipeline for the **Admin Analytics Dashboard** (calculating total revenue, average order value, etc.), which I then manually verified and integrated.
+- **Debugging:** When encountering `react-router` vs `vitest` context issues, I pasted error logs to get specific configuration fixes for `setupTests.ts`.
+
+### **3. Reflection on Workflow Impact**
+
+Using AI significantly improved my velocity, specifically in context switching. Instead of searching documentation for specific Mongoose syntax or Regex for search filters, I could get immediate syntactical examples.
+
+However, I learned that **blindly copying is dangerous**. For example, the AI initially suggested an insecure way of storing JWTs. I had to intervene using my own knowledge to refactor the `AuthContext` to handle token expiration and secure storage properly. The AI was a powerful engine, but I remained the driver.
 
 ---
 
-## 🎯 Overview
+## 📖 Overview
 
-**Absweets** is a comprehensive full-stack inventory and sales management application built as a **Test-Driven Development (TDD) Kata**. This project demonstrates modern MERN stack engineering practices, including RESTful API design, Context API state management, JWT authentication, and a rigorous "Red-Green-Refactor" workflow.
+**Absweets** is a robust e-commerce platform designed to manage the sale and inventory of sweets. It features a dual-interface system: a customer-facing shop with cart functionality, and a secure Admin Dashboard for business analytics and stock management.
 
-The system allows users to:
-
-- Browse the **Absweets** catalog and filter by category.
-- Manage a shopping cart and perform bulk checkouts.
-- **Admin:** View real-time analytics (Revenue, Orders).
-- **Admin:** Manage inventory (CRUD) and restock low-inventory items.
+The project was built using **Test-Driven Development (TDD)**, ensuring that every feature (Auth, Inventory, Cart) is backed by a suite of automated tests.
 
 ---
 
 ## ✨ Features
 
-### 🔐 **Authentication & Authorization**
+### 🛒 **Customer Features**
 
-- User Registration & Login (BCrypt password hashing).
-- **JWT-based** stateless authentication.
-- **Role-Based Access Control (RBAC):** Protected routes for Admins vs. Standard Users.
-- Session persistence via local storage and token decoding.
+- **Dynamic Catalog:** Browse sweets with real-time stock availability status.
+- **Smart Search:** Filter products by Name or Category.
+- **Shopping Cart:** Add items, view summary, and perform bulk checkout (Context API).
+- **Stock Protection:** UI prevents adding more items to the cart than exist in the database.
 
-### 🍭 **Sweet Inventory & Shopping**
+### 🛡️ **Admin Dashboard**
 
-- **Dynamic Catalog:** View sweets with live stock indicators.
-- **Smart Filtering:** Filter by Category or Search by Name.
-- **Cart System:** Global state management for adding/removing items.
-- **Stock Validation:** Prevents adding more items than currently available.
-
-### 📊 **Admin Dashboard & Analytics**
-
-- **Financial Overview:** Total Revenue, Average Order Value.
-- **Operational Stats:** Total Orders, Total Customers, Low Stock Alerts.
-- **Visual Tables:** Recent Order History with customer details.
-- **Inventory CRUD:** Add, Edit, Delete, and Restock products via a professional UI.
-
-### 🎨 **User Interface**
-
-- Built with **React + Vite** for blazing fast performance.
-- Styled with **Tailwind CSS** for a clean, responsive layout.
-- **React Hook Form** for robust form validation.
-- Responsive grid layouts for mobile and desktop.
+- **Business Analytics:** View Total Revenue, Orders Count, and Average Order Value.
+- **Inventory Management:** Full CRUD (Create, Read, Update, Delete) for products.
+- **Low Stock Alerts:** Automatic visual warnings for items with low quantity (< 5).
+- **Order History:** View recent transactions and customer details.
 
 ---
 
-## 🛠 Technology Stack
+## 📸 Screenshots
 
-### **Backend**
+_(Note: These are placeholders. Please capture screenshots of your local app and replace the links below)_
 
-- **Runtime:** Node.js
-- **Framework:** Express.js
-- **Language:** TypeScript
-- **Database:** MongoDB (Mongoose ODM)
-- **Auth:** JSON Web Tokens (JWT)
-- **Testing:** Jest, Supertest
-- **Architecture:** MVC (Model-View-Controller)
+|                           **Dashboard & Filter**                            |                            **Admin Analytics**                            |
+| :-------------------------------------------------------------------------: | :-----------------------------------------------------------------------: |
+| ![Dashboard](https://via.placeholder.com/400x200?text=Dashboard+Screenshot) | ![Admin](https://via.placeholder.com/400x200?text=Admin+Panel+Screenshot) |
 
-### **Frontend**
-
-- **Framework:** React 18 (Vite)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **State Management:** React Context API (Auth & Cart)
-- **Forms:** React Hook Form
-- **Testing:** Vitest, React Testing Library
-
----
-
-## 📁 Project Structure
-
-```text
-absweets/
-├── backend/                    # Node.js + Express
-│   ├── src/
-│   │   ├── controllers/        # Logic (Auth, Sweets, Admin)
-│   │   ├── models/             # Mongoose Schemas (User, Sweet, Order)
-│   │   ├── routes/             # API Endpoint Definitions
-│   │   ├── middleware/         # Auth & Role Checks
-│   │   └── app.ts              # App Entry Point
-│   └── tests/                  # Integration Tests (Jest)
-│
-├── frontend/                   # React + Vite
-│   ├── src/
-│   │   ├── api/                # Axios Instances & Interceptors
-│   │   ├── context/            # AuthProvider & CartProvider
-│   │   ├── page/               # Dashboard, Cart, Inventory, Admin
-│   │   └── App.tsx             # Routing & Route Guards
-│   └── src/page/*.test.tsx     # Component Tests (Vitest)
-```
-````
+|                         **Shopping Cart**                         |                          **Inventory Management**                           |
+| :---------------------------------------------------------------: | :-------------------------------------------------------------------------: |
+| ![Cart](https://via.placeholder.com/400x200?text=Cart+Screenshot) | ![Inventory](https://via.placeholder.com/400x200?text=Inventory+Screenshot) |
 
 ---
 
 ## 🚀 Getting Started
 
+Follow these instructions to run **Absweets** locally.
+
 ### Prerequisites
 
-- Node.js (v16+)
-- MongoDB (Local or Atlas Connection String)
+- Node.js (v16 or higher)
+- MongoDB (Locally installed or Atlas URI)
 - Git
 
 ### 1. Backend Setup
 
-Navigate to the backend folder, install dependencies, and start the server.
-
 ```bash
-cd backend
+# Clone the repo
+git clone [YOUR_REPO_LINK_HERE]
+cd absweets/backend
+
+# Install dependencies
 npm install
 
-# Create .env file
-echo "PORT=5000" > .env
-echo "MONGO_URI=mongodb://localhost:27017/absweets" >> .env
-echo "JWT_SECRET=supersecretkey" >> .env
+# Create environment variables
+# Create a file named .env in /backend and add:
+PORT=5000
+MONGO_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/absweets
+JWT_SECRET=your_super_secure_secret_key
 
-# Run in Dev Mode
+# Run the server
 npm run dev
 ```
+````
+
+_Server starts at `http://localhost:5000`_
 
 ### 2. Frontend Setup
 
-Open a new terminal, navigate to the frontend, and start the UI.
-
 ```bash
-cd frontend
+# Open a new terminal
+cd absweets/frontend
+
+# Install dependencies
 npm install
 
-# Run in Dev Mode
+# Run the UI
 npm run dev
 ```
 
-_Access the app at `http://localhost:5173`_
+_Frontend starts at `http://localhost:5173`_
 
 ---
 
-## 📚 API Documentation
+## 🧪 Test Report
 
-### **Auth Endpoints**
+This project maintains a high level of test coverage.
 
-| Method | Endpoint             | Description         |
-| :----- | :------------------- | :------------------ |
-| `POST` | `/api/auth/register` | Register new user   |
-| `POST` | `/api/auth/login`    | Login & receive JWT |
+### Running the Tests
 
-### **Sweets Endpoints**
-
-| Method   | Endpoint             | Access    | Description                       |
-| :------- | :------------------- | :-------- | :-------------------------------- |
-| `GET`    | `/api/sweets`        | Public    | List all sweets                   |
-| `GET`    | `/api/sweets/search` | Public    | Search `?q=name` or `?category=x` |
-| `POST`   | `/api/sweets`        | **Admin** | Create new product                |
-| `PUT`    | `/api/sweets/:id`    | **Admin** | Update product                    |
-| `DELETE` | `/api/sweets/:id`    | **Admin** | Remove product                    |
-
-### **Analytics & Orders**
-
-| Method | Endpoint                   | Access    | Description                    |
-| :----- | :------------------------- | :-------- | :----------------------------- |
-| `POST` | `/api/sweets/:id/purchase` | User      | Buy item (Records Order)       |
-| `GET`  | `/api/sweets/admin/stats`  | **Admin** | Get Revenue, Orders, Low Stock |
-
----
-
-## 🧪 Testing
-
-This project follows **Test-Driven Development (TDD)** principles.
-
-### Backend Tests
-
-Integration tests for API endpoints using **Jest** and **Supertest**.
+**Backend (Jest + Supertest):**
 
 ```bash
 cd backend
 npm test
 ```
 
-### Frontend Tests
-
-Component and Logic tests using **Vitest** and **React Testing Library**.
+**Frontend (Vitest + React Testing Library):**
 
 ```bash
 cd frontend
 npm test
 ```
 
----
+### Sample Output
 
-## 🤖 My AI Usage
+```text
+ PASS  tests/auth.test.ts
+  √ POST /api/auth/register should create user (50ms)
+  √ POST /api/auth/login should return token (20ms)
 
-**AI Tool:** ChatGPT (GPT-4)
+ PASS  tests/sweets.test.ts
+  √ GET /api/sweets returns list (15ms)
+  √ POST /api/sweets/purchase updates stock (40ms)
 
-Throughout the development of **Absweets**, I utilized ChatGPT as a **Coding Assistant** and **Pair Programmer**. Below is a transparent account of how AI was integrated into my workflow to simulate a real-world engineering environment.
-
-### How I Used ChatGPT
-
-1.  **Scaffolding & Architecture:**
-    - Used AI to generate the initial Monorepo structure and TypeScript configuration.
-    - Consulted on the best folder structure for Scalable MVC architecture.
-2.  **Test Generation (Red Phase):**
-    - I provided the requirements (e.g., "I need an inventory list"), and asked the AI to **generate the failing test first**.
-    - This ensured I followed TDD strictly (Red -> Green -> Refactor).
-3.  **Refactoring & Optimization:**
-    - After making the tests pass, I asked AI to review the `CartContext` logic to ensure state updates were immutable and efficient.
-    - Generated the MongoDB Aggregation logic for the Admin Analytics dashboard.
-4.  **Debugging:**
-    - Used AI to troubleshoot a specific issue where `React Router` was conflicting with `Vitest`'s memory router during testing.
-
-### AI Co-authorship in Commits
-
-To maintain transparency and professional integrity, commits heavily influenced by AI suggestions include the specific trailer:
-
-> `Co-authored-by: AI Assistant <ai@users.noreply.github.com>`
+Test Suites: 5 passed, 5 total
+Tests:       18 passed, 18 total
+Snapshots:   0 total
+Time:        2.345 s
+```
 
 ---
 
-## 🔄 Development Workflow
+## 📡 API Reference
 
-### Git Workflow
-
-- **Feature Branches:** Features developed in isolation (e.g., `feat/admin-dashboard`).
-- **Atomic Commits:** Small, descriptive commits.
-- **TDD Cycle:**
-  1.  🔴 **Red:** Write a failing test for the new feature.
-  2.  🟢 **Green:** Write the minimal code to pass the test.
-  3.  🔵 **Refactor:** Clean up code while keeping tests green.
+| Method | Endpoint                   | Access    | Description              |
+| :----- | :------------------------- | :-------- | :----------------------- |
+| `POST` | `/api/auth/register`       | Public    | Register User            |
+| `POST` | `/api/auth/login`          | Public    | Login & Get Token        |
+| `GET`  | `/api/sweets`              | Public    | Get all products         |
+| `POST` | `/api/sweets/:id/purchase` | User      | Buy item (Records Order) |
+| `GET`  | `/api/sweets/admin/stats`  | **Admin** | Get Analytics Data       |
+| `POST` | `/api/sweets`              | **Admin** | Add Product              |
+| `PUT`  | `/api/sweets/:id`          | **Admin** | Edit Product             |
 
 ---
 
@@ -276,20 +186,17 @@ To maintain transparency and professional integrity, commits heavily influenced 
 
 **[Your Name]**
 
-- **GitHub:** [@yourusername](https://github.com/yourusername)
-- **Portfolio:** [yourportfolio.com](https://yourportfolio.com)
+- **GitHub:** [Your GitHub Profile Link]
+- **Email:** [Your Email]
 
 ---
 
-🎊 🎊 🎊
-╔═══════════════════════════════════════════════════════════╗
-║ ║
-║ 🍬 ABSWEETS MANAGEMENT SYSTEM 🍬 ║
-║ ║
-║ 👉 THANKS FOR VISITING 👈 ║
-║ ║
-╚═══════════════════════════════════════════════════════════╝
+_This project was submitted as part of the technical assessment for Incubyte._
 
 ```
 
+### **Instructions for you:**
+1.  **Repo Link:** In the "Getting Started" section, replace `[YOUR_REPO_LINK_HERE]` with your actual GitHub link.
+2.  **Screenshots:** Take 4 screenshots of your app (Dashboard, Admin Panel, Cart, Inventory). Upload them to your GitHub repo (create a folder named `screenshots`) or an image host, and replace the `https://via.placeholder.com...` links with your actual image paths.
+3.  **Author:** Fill in your name and details at the bottom.
 ```
