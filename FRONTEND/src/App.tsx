@@ -37,6 +37,7 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
 // --- Main App ---
 
 function App() {
+  console.log(import.meta.env.VITE_API_BASE_URL);
   return (
     // <AuthProvider>
     <CartProvider>
