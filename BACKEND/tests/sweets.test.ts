@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import User from "../src/models/User";
 import Sweet from "../src/models/Sweet";
 import jwt from "jsonwebtoken";
+import { describe, it, beforeAll, afterAll, expect } from "@jest/globals";
 
 describe("Sweets API", () => {
   let adminToken: string;
@@ -179,3 +180,4 @@ it("GET /api/sweets/:id should return a single sweet", async () => {
     expect(res.statusCode).toBe(404);
   });
 });
+
